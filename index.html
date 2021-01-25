@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>林大课表||日历导入</title>
+    <!-- 引入样式 -->
+    <link href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/theme-chalk/index.css" rel="stylesheet">
+    <style>
+        #content{
+            width: 100%;
+            height: 100%;
+            text-align:center
+        }
+        #app{
+            margin: 0 auto;
+            text-align:center
+        }
+        #bn{
+            margin: 0 auto;
+            text-align:center
+        }
+        .text {
+            font-size: 14px;
+        }
+
+        .item {
+            padding: 10px 0;
+            text-align: left;
+        }
+
+        .box-card {
+            width: 480px;
+            margin: 0 auto;
+            margin-bottom: 10px;
+        }
+
+        .clearfix:before,
+        .clearfix:after {
+            display: table;
+            content: "";
+        }
+        .clearfix:after {
+            clear: both
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+
+    <div id="app">
+        <el-card class="box-card">
+            <div slot="header" class="clearfix">
+                <span>注意事项</span>
+               </div>
+            <div v-for="o in notice" :key="o" class="text item">
+                {{o}}
+            </div>
+        </el-card>
+
+        <el-select v-model="value_year" placeholder="请选择年级">
+            <el-option
+                    v-for="item in [2016,2017,2018,2019,2020]"
+                    :key="item"
+                    :label="item"
+                    :value="item">
+            </el-option>
+        </el-select>
+        <br>
+        <br>
+        <el-select filterable v-model="value_subject" placeholder="请选择专业">
+            <el-option
+                    v-for="item in subject"
+                    :key="item"
+                    :label="item"
+                    :value="item">
+            </el-option>
+        </el-select>
+        <br>
+        <br>
+        <el-input-number v-model="value_class" :min="1" :max="10" label="班级序号"></el-input-number>
+        <br>
+        <br>
+        <el-button id="bn" type="primary" round v-on:click="getIcs">生成日历课表</el-button>
+        <br>
+        <br>
+        <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=dkfzXwCFb8y6b6CpxMIBBvJxBP88NVOK&jump_from=webapi"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="林大课表 聊天灌水群" title="林大课表 聊天灌水群"></a>
+    </div>
+    </div>
+    <!-- import Vue before Element -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.12/vue.min.js"></script>
+    <!-- import JavaScript -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/index.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                value_year: '',
+                value_subject:'',
+                value_class:'',
+                subject : ['音乐表演','金融学(CFA)','自动化','森林保护','软件工程','电子信息工程','会展经济与管理','能源与动力工程','物流工程','新能源科学与工程','土地资源管理','食品科学与工程','建筑学','材料成型及控制工程','食品科学与工程类','通信工程','会计学(ACCA)','环境科学','金融学(中外合作办学)','测绘工程','旅游管理','物流管理','土木工程','工业设计','信息与计算科学','木材科学与工程','食品质量与安全','林学','粮食工程','城市地下空间工程','国际商务','森林工程','国际经济与贸易(国际教育实验班)','环境设计','英语','环境科学与工程类','工程管理','酒店管理','游憩与公园管理班','金融学','保险学','朝鲜语','法语','电子信息工程(中外合作办学)','国际经济与贸易（留学生）','法学','俄语','高分子材料与工程','林产化工','水土保持与荒漠化防治','产品设计','城乡规划','园艺','环境生态工程','材料类','应用物理学','材料化学','林学(中外合作办学)','人力资源管理','生态学','旅游管理(国际)','交通运输','旅游管理类','环境工程','物流管理(国际教育实验班)','机械设计制造及其自动化','计算机科学与技术','农林经济管理','国际经济与贸易','生物工程','翻译','园林','市场营销(国际)','生物技术','化学工程与工艺','视觉传达设计','行政管理','舞蹈学','会计学(中外合作办学)','材料科学与工程','国际旅游班','工程力学','电子科学与技术','风景园林','会计学','旅游信息化技术与管理','汽车服务工程','林学(陶铸实验班)','日语','地理信息科学','市场营销'],
+                notice:[
+                "（1）ics是一种通用的日历格式，支持win、mac、linux、android、ios等各个系统的日历软件。",
+       "（2）安卓手机支持但不限于 华为日历、谷歌日历、OPPO日历。",
+        "（3）请先在日历软件中新建一个账户，便于删除或者修改。",
+        "（4）用任何文件管理器打开ics文件即可导入日历，请自行添加日程提醒功能。（ios请用safari打开本网站，下载后直接导入。）",
+        "（5）此课表仅供参考，可能出现少课漏课的情况，以学校官方课表为准。网站为开发者研究学习所用，不承担任何责任。",
+        "（6）ics课表的使用需要一定技术含量，ics格式全部已经效验，全部可以导入。如果你自己打开乱码，请看反馈社区的指南。",
+        "（7）安卓APP版本请访问 https://ldkb.xyz 下载。本课表按班级导入，公共体育课、公共英语课都是选修课，得自己改成符合自己的。"
+                ]
+            }, methods:{
+                getIcs:function (){
+                    if(this.value_year && this.value_subject && this.subject.indexOf(this.value_subject)>-1){
+
+                    let classname = this.value_year +this.value_subject + this.value_class +"班"
+                        window.location.href="https://ldkb.nixiaobai.com/ics/"+classname+".ics";
+                    }else{
+                        alert("错误")
+                    }
+
+
+                }
+            }
+
+        })
+    </script>
+</body>
+</html>
