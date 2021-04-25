@@ -1,127 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>林大课表||日历导入</title>
-    <!-- 引入样式 -->
-    <link href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/theme-chalk/index.css" rel="stylesheet">
-    <style>
-        #content{
-            width: 100%;
-            height: 100%;
-            text-align:center
-        }
-        #app{
-            margin: 0 auto;
-            text-align:center
-        }
-        #bn{
-            margin: 0 auto;
-            text-align:center
-        }
-        .text {
-            font-size: 14px;
-        }
-
-        .item {
-            padding: 10px 0;
-            text-align: left;
-        }
-
-        .box-card {
-            width: 480px;
-            margin: 0 auto;
-            margin-bottom: 10px;
-        }
-
-        .clearfix:before,
-        .clearfix:after {
-            display: table;
-            content: "";
-        }
-        .clearfix:after {
-            clear: both
-        }
-    </style>
-</head>
-<body>
-    <div id="content">
-
-    <div id="app">
-        <el-card class="box-card">
-            <div slot="header" class="clearfix">
-                <span>注意事项</span>
-               </div>
-            <div v-for="o in notice" :key="o" class="text item">
-                {{o}}
-            </div>
-        </el-card>
-
-        <el-select v-model="value_year" placeholder="请选择年级">
-            <el-option
-                    v-for="item in [2016,2017,2018,2019,2020]"
-                    :key="item"
-                    :label="item"
-                    :value="item">
-            </el-option>
-        </el-select>
-        <br>
-        <br>
-        <el-select filterable v-model="value_subject" placeholder="请选择专业">
-            <el-option
-                    v-for="item in subject"
-                    :key="item"
-                    :label="item"
-                    :value="item">
-            </el-option>
-        </el-select>
-        <br>
-        <br>
-        <el-input-number v-model="value_class" :min="1" :max="10" label="班级序号"></el-input-number>
-        <br>
-        <br>
-        <el-button id="bn" type="primary" round v-on:click="getIcs">生成日历课表</el-button>
-        <br>
-        <br>
-        <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=dkfzXwCFb8y6b6CpxMIBBvJxBP88NVOK&jump_from=webapi"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="林大课表 聊天灌水群" title="林大课表 聊天灌水群"></a>
-    </div>
-    </div>
-    <!-- import Vue before Element -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.12/vue.min.js"></script>
-    <!-- import JavaScript -->
-    <script src="https://cdn.bootcdn.net/ajax/libs/element-ui/2.9.2/index.js"></script>
-    <script>
-        var app = new Vue({
-            el: '#app',
-            data: {
-                value_year: '',
-                value_subject:'',
-                value_class:'',
-                subject : ['社会体育指导与管理','会计学','电子信息工程','国际经济与贸易(国际教育实验班)','市场营销','国际商务','旅游管理(国际)','电子科学与技术','土木类','材料类','园林','生物技术','车辆工程','新能源科学与工程','测绘工程','材料化学','法语','粮食工程','工程力学','食品科学与工程类','材料成型及控制工程','土地资源管理','法学','风景园林','信息与计算科学','建筑学','交通运输','农林经济管理','工程管理','林学(陶铸实验班)','金融学类','酒店管理','森林保护','会展经济与管理','日语','计算机科学与技术','林学类','水土保持与荒漠化防治','食品科学与工程','英语','环境生态工程','国际经济与贸易','机械设计制造及其自动化','林产化工','金融学(CFA卓越班)','金融学(中外合作办学)','市场营销(国际)','物流管理','国际旅游班','舞蹈学','音乐表演','建筑类','旅游信息化技术与管理','保险学','城市地下空间工程','木材科学与工程','工业设计','游憩与公园管理','食品质量与安全','人力资源管理','地理信息科学','土木工程','城乡规划','电子信息工程(中外合作办学)','环境工程','旅游管理','金融学','林学','生态学','生物科学类','行政管理','汽车服务工程','产品设计','金融学(CFA)','国际经济与贸易（留学生）','翻译','游憩与公园管理班','能源与动力工程','会计学(中外合作办学)','旅游管理类','应用物理学','材料科学与工程','会计学(ACCA)','高分子材料与工程','林学(中外合作办学)','自动化','环境科学与工程类','俄语','森林工程','化学工程与工艺','园艺','朝鲜语','环境设计','生物工程','软件工程','国际旅游','物流工程','物流管理(国际教育实验班)','会计学(ACCA卓越班)','视觉传达设计','环境科学','通信工程'],
-                notice:[
-                "（1）ics是一种通用的日历格式，支持win、mac、linux、android、ios等各个系统的日历软件。",
-       "（2）安卓手机支持但不限于 华为日历、谷歌日历、OPPO日历。",
-        "（3）请先在日历软件中新建一个账户，便于删除或者修改。",
-        "（4）用任何文件管理器打开ics文件即可导入日历，请自行添加日程提醒功能。（ios请用safari打开本网站，下载后直接导入。）",
-        "（5）此课表仅供参考，可能出现少课漏课的情况，以学校官方课表为准。网站为开发者研究学习所用，不承担任何责任。",
-        "（6）ics课表的使用需要一定技术含量，ics格式全部已经效验，全部可以导入。如果你自己打开乱码，请看反馈社区的指南。",
-        "（7）安卓APP版本请访问 https://ldkb.xyz 下载。本课表按班级导入，公共体育课、公共英语课都是选修课，得自己改成符合自己的。"
-                ]
-            }, methods:{
-                getIcs:function (){
-                    if(this.value_year && this.value_subject && this.subject.indexOf(this.value_subject)>-1){
-
-                    let classname = this.value_year +this.value_subject + this.value_class +"班"
-                        window.location.href="https://ldkb.nixiaobai.com/ics/"+classname+".ics";
-                    }else{
-                        alert("错误")
-                    }
-
-
-                }
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>ICS课表导入</title>
+        <style>
+            #app {
+                font-family: "Helvetica Neue", Helvetica, "PingFang SC",
+                    "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial,
+                    sans-serif;
+                text-align: center;
+                color: #3c3c3c;
+            }
+            .menu_li {
+                height: 32px;
+                line-height: 32px;
             }
 
-        })
-    </script>
-</body>
+            #in_name,
+            #in_psw {
+                margin-top: 5px;
+                width: 50%;
+            }
+            #in_bn {
+                margin-top: 5px;
+                width: 20%;
+            }
+        </style>
+    </head>
+    <body>
+        <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.9/vue.js"></script>
+        <link
+            href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.15.1/theme-chalk/index.min.css"
+            rel="stylesheet"
+        />
+        <script src="https://cdn.bootcdn.net/ajax/libs/element-ui/2.15.1/index.min.js"></script>
+        <div id="app">
+            <el-page-header
+                class="menu_li"
+                @back="goBack"
+                content="ICS个人课表导入"
+            >
+            </el-page-header>
+            <el-divider></el-divider>
+            <h1>ICS个人课表导入</h1>
+            <el-input
+                id="in_name"
+                v-model="in_name"
+                placeholder="请输入学号"
+                maxlength="8"
+                show-word-limit
+            ></el-input>
+            <el-input
+                id="in_psw"
+                placeholder="请输入密码"
+                v-model="in_psw"
+                maxlength="20"
+                show-password
+            ></el-input>
+            <el-button id="in_bn" type="success" @click="getICS">导入</el-button>
+        </div>
+        <script>
+            var app = new Vue({
+                el: "#app",
+                data: {
+                    message: "Hello Vue!",
+                    in_name: "",
+                    in_psw: "",
+                },
+                methods: {
+                    goBack() {
+                        window.open("https://ldkb.xyz");
+                    },
+                    getICS() {
+                        window.open(`https://service-pc9umdfq-1257334448.gz.apigw.tencentcs.com/release/LDKB-ICS?name=${this.in_name}&password=${this.in_psw}`);
+                    }
+                },
+            });
+        </script>
+    </body>
 </html>
